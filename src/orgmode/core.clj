@@ -32,15 +32,18 @@
     (parse-lines (line-seq r))))
 
 ;; ### Generated formatted text
-(defn- get-format [fmt root]
-  fmt)
-(defmulti convert get-format)
-
-(defmethod convert :html [r]
+(defn convert [r]
   (html/org-to-html r))
 
-(defmethod convert :default [r]
-  (convert :html r))
+;; (defn- get-format [fmt root]
+;;   fmt)
+;; (defmulti convert get-format)
+
+;; (defmethod convert :html [r]
+;;   (html/org-to-html r))
+
+;; (defmethod convert :default [r]
+;;   (convert :html r))
 
 
 ;; ### Utilities
