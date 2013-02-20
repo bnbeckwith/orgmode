@@ -192,7 +192,7 @@
             (-> z
                 (zip/append-child {:type :listitem
                                    :content []
-                                   :text text})))
+                                   :text (orgmode.inline/parse-inline-elements text)})))
            (if (> level (:listlevel (zip/node z)))
              (parse-plain-list
               lines
@@ -203,7 +203,7 @@
                                      :listtype listtype
                                      :content [{:type :listitem
                                                 :content []
-                                                :text text}]})
+                                                :text (orgmode.inline/parse-inline-elements text)}]})
                   (zip/down)
                   (zip/rightmost)))
              (parse-plain-list
@@ -218,7 +218,7 @@
                                  :listtype listtype
                                  :content [{:type :listitem
                                             :content []
-                                            :text text}]})
+                                            :text (orgmode.inline/parse-inline-elements text)}]})
               (zip/down)
               (zip/rightmost))))))
   ([[line & rest :as lines] z]
@@ -286,7 +286,7 @@
     (reduce 
      zip/append-child
      z
-     (orgmode.inline/parse-inline-elements [line]))))
+     (orgmode.inline/parse-inline-elements line))))
 
 (defn next-line [[line & rest] z]
   "Process each line with the list of block element parsers. Return

@@ -39,9 +39,11 @@
   [(:block x) (make-para (:content x))])
 
 (defmethod hiccupify :headline [x]
-  [(keyword (str "h" (:level x)))
-   (:text x)
-   (hiccupify (:content x))])
+  ; TODO -- check for no-export here
+  (seq 
+   [[(keyword (str "h" (:level x)))
+    (:text x)]
+   (hiccupify (:content x))]))
 
 (defmethod hiccupify :root [x]
   [:div (hiccupify (:content x))])
@@ -50,7 +52,7 @@
   [(:listtype x) (hiccupify (:content x)) ])
 
 (defmethod hiccupify :listitem [x]
-  [:li (hiccupify (:content x))])
+  [:li (hiccupify (:text x)) (hiccupify (:content x))])
 
 (defmethod hiccupify :table [x]
   (into [:table]
