@@ -17,7 +17,7 @@
   (for [[_ link text ] coll]
     {:type :link 
      :uri link
-     :content (if text link text)}))
+     :content (or text link)}))
 
 (def footnote-re #"\[(\d+|fn:(.*))\]")
 
@@ -113,10 +113,8 @@
   [re l cfn ms]
   (let [ls  (s/split l re)
         els (vec (cfn ms))]
-    (if (seq ls)
-      els
-      (vec
-       (interleave ls (conj els ""))))))
+    (vec
+     (interleave ls (conj els "")))))
     
 (defn make-elem 
   "Try to make any inline elements out of strings in coll using re and
