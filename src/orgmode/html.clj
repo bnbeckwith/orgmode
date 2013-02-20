@@ -28,7 +28,7 @@
       (list "<!-- pygmentize error: " (:err c) "-->"
        [:code
         [:pre 
-         (StringEscapeUtils/escapeHtml4 (apply str (:content x)))]])
+         (StringEscapeUtils/escapeHtml4 (t/join "\n" (:content x)))]])
       (:out c))))
   
 (defn make-para [coll]
