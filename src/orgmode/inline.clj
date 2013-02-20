@@ -132,7 +132,7 @@
   "Takes line and breaks it into inline elements and interleaving
   text"
   [line]
-  (-> [line]
+  (-> line
       (make-elem link-re        link-create)
       (make-elem footnote-re    footnote-create)
       (make-elem target-re      target-create)
