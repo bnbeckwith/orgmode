@@ -25,10 +25,10 @@
                 "-f" "html" "-l" (first (:attribs x))
            :in (t/join "\n" (:content x)))]
     (if (:exit c)
-      ["<!-- pygmentize error: " (:err c) "-->"
+      (list "<!-- pygmentize error: " (:err c) "-->"
        [:code
         [:pre 
-         (StringEscapeUtils/escapeHtml4 (apply str (:content x)))]]]
+         (StringEscapeUtils/escapeHtml4 (apply str (:content x)))]])
       (:out c))))
   
 (defn make-para [coll]
