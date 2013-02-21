@@ -172,7 +172,7 @@
      (handle-last-line 
       [line z]
       (let [type (name (:block (zip/node z)))
-            end-re (re-pattern (str block-close-re type "\s*"))]
+            end-re (re-pattern (str block-close-re type #"\s*"))]
         (if (re-matches end-re line)
           #(next-line rest (zip/up z))
           #(parse-block rest (zip/append-child z line))))))
