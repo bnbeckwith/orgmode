@@ -64,7 +64,7 @@
         tbl  [:table
               (when hdr?
                 (into [:tr] (map (fn [x] [:th (hiccupify x)]) (first rows))))]
-        rows (if hdr? (nnext rows) rows)]
+        rows (if hdr? (next (filter #(not (= :tline %)) rows)) rows)]
     (into tbl
           (for [row rows]
             (into [:tr] 
