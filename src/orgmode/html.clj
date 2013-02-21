@@ -113,7 +113,15 @@
   [:a {:id (:lbl x) :href (str "#" (:lbl x))}])
 
 (defmethod hiccupify :seq [x]
-  (map hiccupify x))
+  (letfn [(p-able [s]
+            (or (and (string? s)
+                     (not (empty? s)))
+                (:inline s)))]
+    (for [s (partition-by p-able x)]
+      (if (p-able (first s))
+        [:p
+         (map hiccupify s)]
+        (map hiccupify s)))))
 
 (defmethod hiccupify :default [x]
   (list x "\n"))

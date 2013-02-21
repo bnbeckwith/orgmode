@@ -112,11 +112,11 @@
   constructed from ms using cfn"
   [re l cfn ms]
   (let [ls  (s/split l re)
-        els (vec (cfn ms))]
+        els (vec (map #(assoc % :inline true) (cfn ms)))]
     (if (empty? ls)
       els
       (vec
-       (interleave ls (conj els ""))))))
+       (interleave ls (conj els {:inline true :type :comment :text "FIX INTERLEAVING"}))))))
     
 (defn make-elem 
   "Try to make any inline elements out of strings in coll using re and
