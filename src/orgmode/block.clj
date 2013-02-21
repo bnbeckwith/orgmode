@@ -181,7 +181,7 @@
        rest
        (-> z
            (zip/append-child {:type :block
-                              :block (keyword type)
+                              :block (keyword (.toLower type))
                               :content []
                               :attribs (when attribs
                                          (s/split attribs #"\s+"))})
