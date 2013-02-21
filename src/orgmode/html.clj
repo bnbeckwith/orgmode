@@ -94,6 +94,11 @@
 (defmethod hiccupify :code [x]
   [:code (hiccupify (:content x))])
 
+(defmethod hiccupify :comment [x]
+  (list "<!-- "
+        (hiccupify (:content x))
+        " -->"))
+
 (defmethod hiccupify :verbatim [x]
   [:verbatim (:content x)])
 
