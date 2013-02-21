@@ -45,7 +45,7 @@
   (if (and (:tags x) ((:tags x) "noexport"))
     ""
     (list 
-     [(keyword (str "h" (:level x)))
+     [(keyword (str "h" (inc (:level x))))
        (:text x)]
      (hiccupify (:content x)))))
 
