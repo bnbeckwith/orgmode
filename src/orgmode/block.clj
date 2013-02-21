@@ -39,6 +39,10 @@
   "Regex that matches the end of a begin block"
   #"^#\+(?i)END_")
 
+(def comment-re
+  "Regex that matches an inline comment"
+  #"^\s*#\w+(.*)")
+
 (def headline-re 
   "Regex that matches headlines and todo items. This regex does a
    bunch of work and captures the leading stars, TODO or DONE tags,
@@ -85,6 +89,17 @@
      rest
      (zip/edit z 
                #(assoc-in %1 [:attribs name] values )))))
+
+(defn parse-comment
+  [[& rest] z [_ comment]]
+  (fn []
+    (next-line
+     rest
+     (zip/append-child
+      z
+      {:type :comment
+       :text (orgmode.inline/parse-inline-elements comment)}))))
+               
 
 (defn parse-footnote
   "Add current location z, add a footnote definition"
@@ -301,6 +316,7 @@
      plain-list-re   :>> (partial parse-plain-list rest z)
      table-re        :>> (partial parse-table rest z)
      footnote-def-re :>> (partial parse-footnote rest z)
+     comment-re      :>> (partial parse-comment rest z)
      (add-line-element rest z line))))
 
 (defn parse-lines
