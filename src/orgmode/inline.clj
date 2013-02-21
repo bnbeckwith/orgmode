@@ -113,9 +113,11 @@
   [re l cfn ms]
   (let [ls  (s/split l re)
         els (vec (cfn ms))]
-    (vec
-       (interleave ls (conj els "")))))
-  
+    (if (not (seq? ls))
+      els
+      (vec
+       (interleave ls (conj els ""))))))
+    
 (defn make-elem 
   "Try to make any inline elements out of strings in coll using re and
   cstor to match and construct these elements"
@@ -132,7 +134,6 @@
   "Takes line and breaks it into inline elements and interleaving
   text"
   [line]
-  (prn line)
   (-> [line]
       (make-elem link-re        link-create)
       (make-elem footnote-re    footnote-create)
