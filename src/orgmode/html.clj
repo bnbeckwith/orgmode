@@ -56,7 +56,7 @@
   [(:listtype x) (hiccupify (:content x)) ])
 
 (defmethod hiccupify :listitem [x]
-  [:li (hiccupify (:text x)) (hiccupify (:content x))])
+  [:li (map hiccupify (:text x)) (hiccupify (:content x))])
 
 (defmethod hiccupify :table [x]
   (into [:table]
