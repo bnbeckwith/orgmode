@@ -140,7 +140,7 @@
                            :content []
                            :tags (when tag
                                    (into #{} 
-                                         [(s/split tag #":")]))})
+                                         (s/split tag #":")))})
         zip/down
         zip/rightmost))))
 

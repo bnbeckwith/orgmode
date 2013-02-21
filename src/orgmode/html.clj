@@ -42,11 +42,12 @@
   [(:block x) (make-para (:content x))])
 
 (defmethod hiccupify :headline [x]
-  ; TODO -- check for no-export here
-  (seq 
-   [[(keyword (str "h" (:level x)))
-    (:text x)]
-   (hiccupify (:content x))]))
+  (if (and (:tags x) ((:tags x) "noexport"))
+    ""
+    (list 
+     [(keyword (str "h" (:level x)))
+       (:text x)]
+     (hiccupify (:content x)))))
 
 (defmethod hiccupify :root [x]
   [:div (hiccupify (:content x))])
