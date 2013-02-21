@@ -59,10 +59,16 @@
   [:li (map hiccupify (:text x)) (hiccupify (:content x))])
 
 (defmethod hiccupify :table [x]
-  (into [:table]
-        (for [row (:rows x)]
-          (into [:tr] 
-                (map (fn [x] [:td (hiccupify x)]) row)))))
+  (let [rows (:rows x)
+        hdr? (= (second rows) :tline)
+        tbl  [:table
+              (when hdr?
+                (into [:tr] (map (fn [x] [:th (hiccupify x)]) (first rows))))]
+        rows (if hdr? (nnext rows) rows)]
+    (into tbl
+          (for [row rows]
+            (into [:tr] 
+                  (map (fn [x] [:td (hiccupify x)]) row))))))
 
 (defmethod hiccupify :block [x]
   (blockprocess x))
