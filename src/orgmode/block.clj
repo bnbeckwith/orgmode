@@ -41,7 +41,7 @@
 
 (def comment-re
   "Regex that matches an inline comment"
-  #"^\s*#\w+(.*)")
+  #"^\s*#\s+(.*)")
 
 (def headline-re 
   "Regex that matches headlines and todo items. This regex does a
@@ -91,6 +91,7 @@
                #(assoc-in %1 [:attribs name] values )))))
 
 (defn parse-comment
+  "At current location z, add comment with parsed text"
   [[& rest] z [_ comment]]
   (fn []
     (next-line
@@ -98,7 +99,7 @@
      (zip/append-child
       z
       {:type :comment
-       :text (orgmode.inline/parse-inline-elements comment)}))))
+       :content (orgmode.inline/parse-inline-elements comment)}))))
                
 
 (defn parse-footnote
