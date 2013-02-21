@@ -21,11 +21,14 @@
   (hiccup.core/html (hiccupify r)))
 
 (defmethod blockprocess :src [x]
-  (let [c (s/sh "pygmentize" 
-                "-f" "html" "-l" (first (:attribs x))
+  (let [type-map {"elisp" "cl"}
+        c (s/sh "pygmentize" 
+                "-f" "html" "-l" 
+                (or (type-map (first (:attribs x)))
+                    (first (:attribs x)))
            :in (t/join "\n" (:content x)))]
-    (if (:exit c)
-      (list "<!-- pygmentize error: " (:err c) "-->"
+    (if (not (= (:exit c) 0))
+      (list "<!-- pygmentize error: " (:err c) "\n Output" (:out c) "\n Error Code: " (:exit c) "\n-->"
        [:code
         [:pre 
          (StringEscapeUtils/escapeHtml4 (t/join "\n" (:content x)))]])
