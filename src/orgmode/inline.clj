@@ -113,7 +113,7 @@
   [re l cfn ms]
   (let [ls  (s/split l re)
         els (vec (cfn ms))]
-    (if (not (seq? ls))
+    (if (empty? ls)
       els
       (vec
        (interleave ls (conj els ""))))))
