@@ -110,4 +110,4 @@
   (map hiccupify x))
 
 (defmethod hiccupify :default [x]
-  x)
+  (list x "\n"))
