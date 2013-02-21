@@ -107,10 +107,11 @@
   (fn []
     (next-line
      rest
-     (-> z
-         (zip/append-child {:type :footnote
-                            :id (if fid fid nid)
-                            :content (orgmode.inline/parse-inline-elements text)})))))
+     (zip/append-child
+      z
+      {:type :footnote
+       :id (or fid nid)
+       :content (orgmode.inline/parse-inline-elements text)}))))
          
 
 (defn move-level
