@@ -29,7 +29,7 @@
      :id   (if (nil? name)
              ref name)}))
 
-(def target-re #"<<([^>]*)>>")
+(def target-re #"<<\s*([^>]*?)\s*>>")
 
 (defn target-create
   "Creates target structures from a list of regex matches"
