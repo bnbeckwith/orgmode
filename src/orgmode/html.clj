@@ -106,7 +106,7 @@
         (hiccupify (:content x))
         " -->"
         (when-let [tgts (filter #(= :target (:type %)) (:content x))]
-          (hiccupify tgts))))
+          (map hiccupify tgts))))
 
 (defmethod hiccupify :verbatim [x]
   [:verbatim (:content x)])
