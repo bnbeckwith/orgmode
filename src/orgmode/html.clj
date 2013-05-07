@@ -104,7 +104,9 @@
 (defmethod hiccupify :comment [x]
   (list "<!-- "
         (hiccupify (:content x))
-        " -->"))
+        " -->"
+        (when-let [tgts (filter #(= :target (:type %)) (:content x))]
+          (hiccupify tgts))))
 
 (defmethod hiccupify :verbatim [x]
   [:verbatim (:content x)])
