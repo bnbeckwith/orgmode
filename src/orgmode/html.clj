@@ -110,7 +110,7 @@
   [:verbatim (:content x)])
 
 (defmethod hiccupify :target [x]
-  [:a {:id (:lbl x) :href (str "#" (:lbl x))}])
+  [:a {:id (:id x) :href (str "#" (:id x))}])
 
 (defmethod hiccupify :seq [x]
   (letfn [(p-able [s]
