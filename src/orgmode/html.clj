@@ -5,6 +5,25 @@
             [clojure.string :as t])
   (:import [org.apache.commons.lang3 StringEscapeUtils]))
 
+(def img-suffix-re
+  #"(?i)(png|bmp|jpg|jpeg)$")
+
+(defn squish-seq [s]
+  (letfn [(concat-seq ([] [])
+            ([x y]
+               (vec 
+                (if (seq? y)
+                  (concat x (squish-seq y))
+                  (into x [y])))))]
+    (reduce concat-seq [] s)))
+                   
+(defn maybe-img 
+  ([url] (maybe-img url url))
+  ([url alt]
+     (if (re-find img-suffix-re url)
+       [:img {:src url :alt alt}]
+       alt)))
+
 (defn elmtype [x]
   (if (map? x)
     (if-let [t (:type x)]
@@ -16,6 +35,9 @@
 
 (defmulti hiccupify elmtype)
 (defmulti blockprocess :block)
+
+(defn hiccup [r]
+  (squish-seq (hiccupify r)))
 
 (defn org-to-html [r]
   (hiccup.core/html (hiccupify r)))
@@ -36,10 +58,10 @@
   
 (defn make-para [coll]
   (let [ps (partition-by #(or nil? (re-matches #"\s+" %)) coll)]
-    (map (fn [y] [:p (map hiccupify y)]) ps)))
+    (map (fn [y] (into [:p] (map hiccupify y))) ps)))
 
 (defmethod blockprocess :default [x]
-  [(:block x) (make-para (:content x))])
+  (into [(:block x)] (make-para (:content x))))
 
 (defmethod hiccupify :headline [x]
   (if (and (:tags x) ((:tags x) "noexport"))
@@ -50,13 +72,13 @@
      (hiccupify (:content x)))))
 
 (defmethod hiccupify :root [x]
-  [:div (hiccupify (:content x))])
+  (into [:div] (hiccupify (:content x))))
 
 (defmethod hiccupify :list [x]
-  [(:listtype x) (hiccupify (:content x)) ])
+  (into [(:listtype x)] (hiccupify (:content x))))
 
 (defmethod hiccupify :listitem [x]
-  [:li (map hiccupify (:text x)) (hiccupify (:content x))])
+  (into (into [:li] (map hiccupify (:text x))) (hiccupify (:content x))))
 
 (defmethod hiccupify :table [x]
   (let [rows (:rows x)
@@ -74,7 +96,9 @@
   (blockprocess x))
 
 (defmethod hiccupify :link [x]
-  [:a {:href (:uri x)} (hiccupify (:content x))])
+  (let [{:keys [uri content]} x]
+    (into [:a {:href uri}] 
+          (maybe-img uri content))))
 
 ;; TODO -- consider using :cite?
 (defmethod hiccupify :footnote-ref [x]
@@ -82,24 +106,24 @@
    (:id x)])
 
 (defmethod hiccupify :footnote [x]
-  [:a.footnote-def 
-   {:id (:id x)
-    :href (str "#" (:id x))}
-   (hiccupify (:content x))])
+  (into [:a.footnote-def 
+         {:id (:id x)
+          :href (str "#" (:id x))}]
+   (hiccupify (:content x))))
 
 ;; TODO -- figure out timestamps
 
 (defmethod hiccupify :bold [x]
-  [:strong (hiccupify (:content x))])
+  (into [:strong] (hiccupify (:content x))))
 
 (defmethod hiccupify :italic [x]
-  [:em (hiccupify (:content x))])
+  (into [:em] (hiccupify (:content x))))
 
 (defmethod hiccupify :underline [x]
-  [:u (hiccupify (:content x))])
+  (into [:u] (hiccupify (:content x))))
 
 (defmethod hiccupify :code [x]
-  [:code (hiccupify (:content x))])
+  (into [:code] (hiccupify (:content x))))
 
 (defmethod hiccupify :comment [x]
   (list "<!-- "
@@ -121,9 +145,8 @@
                 (:inline s)))]
     (for [s (partition-by p-able x)]
       (if (p-able (first s))
-        [:p
-         (map hiccupify s)]
+        [:p (map hiccupify s)]
         (map hiccupify s)))))
 
 (defmethod hiccupify :default [x]
-  (list x "\n"))
+  (str x "\n"))
