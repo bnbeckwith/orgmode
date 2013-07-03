@@ -22,7 +22,7 @@
   ([url alt]
      (if (re-find img-suffix-re url)
        [:img {:src url :alt alt}]
-       alt)))
+       [:a {:href url} alt])))
 
 (defn elmtype [x]
   (if (map? x)
@@ -97,8 +97,7 @@
 
 (defmethod hiccupify :link [x]
   (let [{:keys [uri content]} x]
-    (into [:a {:href uri}] 
-          (maybe-img uri content))))
+     (maybe-img uri content)))
 
 ;; TODO -- consider using :cite?
 (defmethod hiccupify :footnote-ref [x]
