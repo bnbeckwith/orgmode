@@ -88,7 +88,7 @@
     (next-line 
      rest
      (zip/edit z 
-               #(assoc-in %1 [:attribs name] values )))))
+               #(assoc-in %1 [:attribs (keyword (.toLowerCase name))] values )))))
 
 (defn parse-comment
   "At current location z, add comment with parsed text"
@@ -159,7 +159,7 @@
                   rest
                   (-> z
                       (zip/edit
-                       #(assoc-in % [:properties (keyword prop)] value))))))
+                       #(assoc-in % [:properties (keyword (.toLowerCase prop))] value))))))
         (throw (Exception. 
                 (str "No :END: for propery block (looking at \""
                      line "\"" ))))))

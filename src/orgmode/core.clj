@@ -35,17 +35,6 @@
 (defn convert [r]
   (html/org-to-html r))
 
-;; (defn- get-format [fmt root]
-;;   fmt)
-;; (defmulti convert get-format)
-
-;; (defmethod convert :html [r]
-;;   (html/org-to-html r))
-
-;; (defmethod convert :default [r]
-;;   (convert :html r))
-
-
 ;; ### Utilities
 ;;
 ;; The functions aid in the handling of the resulting tree from the
