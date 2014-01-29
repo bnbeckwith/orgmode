@@ -1,4 +1,4 @@
-(defproject com.bnbeckwith/orgmode "0.7.2"
+(defproject com.bnbeckwith/orgmode "0.7.3"
   :description "Org-mode parser"
   :url "http://github.com/bnbeckiwith/orgmode"
   :license {:name "Eclipse Public License"

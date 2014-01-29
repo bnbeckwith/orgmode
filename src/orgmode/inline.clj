@@ -98,12 +98,12 @@
   (fn [ts] 
     (for [[_ t] ts]
       {:type type
-       :content t})))
+       :content [t]})))
 
 (defn fmt-re 
   "Create a re-pattern to match the given delimiter s"
   [s]
-  (re-pattern (str s #"(\S(:?.*?\S))" s)))
+  (re-pattern (str s #"(\S(?:.*?\S)??)" s)))
 
 ; ### Inline Processing
 
