@@ -17,7 +17,7 @@
   (for [[_ link text ] coll]
     {:type :link 
      :uri link
-     :content (or text link)}))
+     :content [(or text link)]}))
 
 (def footnote-re #"\[(\d+|fn:(.*))\]")
 

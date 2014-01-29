@@ -157,9 +157,9 @@
           #(next-line rest z)
           (fn [] (parse-property
                   rest
-                  (-> z
-                      (zip/edit
-                       #(assoc-in % [:properties (keyword (.toLowerCase prop))] value))))))
+                  (zip/edit
+                   z
+                   #(assoc-in % [:properties (keyword (.toLowerCase prop))] value)))))
         (throw (Exception. 
                 (str "No :END: for propery block (looking at \""
                      line "\"" ))))))
@@ -206,10 +206,9 @@
          (if (= level (:listlevel (zip/node z)))
            (parse-plain-list
             lines
-            (-> z
-                (zip/append-child {:type :listitem
-                                   :content []
-                                   :text (orgmode.inline/parse-inline-elements text)})))
+            (zip/append-child z
+                              {:type :listitem
+                               :content (orgmode.inline/parse-inline-elements text)}))
            (if (> level (:listlevel (zip/node z)))
              (parse-plain-list
               lines
@@ -219,8 +218,7 @@
                                      :listlevel level
                                      :listtype listtype
                                      :content [{:type :listitem
-                                                :content []
-                                                :text (orgmode.inline/parse-inline-elements text)}]})
+                                                :content (orgmode.inline/parse-inline-elements text)}]})
                   (zip/down)
                   (zip/rightmost)))
              (parse-plain-list
@@ -234,8 +232,7 @@
                                  :listlevel level
                                  :listtype listtype
                                  :content [{:type :listitem
-                                            :content []
-                                            :text (orgmode.inline/parse-inline-elements text)}]})
+                                            :content (orgmode.inline/parse-inline-elements text)}]})
               (zip/down)
               (zip/rightmost))))))
   ([[line & rest :as lines] z]
@@ -260,16 +257,15 @@
   (let [row (if (re-matches #"[-+]+\|?" s)
               :tline
               (map s/trim (s/split s #"\|")))]
-    (-> z 
-        (zip/edit 
-         #(assoc % :rows (conj (:rows %) row))))))
+    (zip/edit z
+              #(update-in % [:rows] conj row))))
 
 (defn add-table-formula 
   "Add table formula at z, splitting s into separate formulas."
   [z s]
-  (-> z
-      (zip/edit
-       #(assoc % :formulas (s/split s #"::")))))
+  (zip/edit z
+       #(assoc % :formulas (s/split s #"::"))))
+
 (defn parse-table 
   "Parse a table to add at location z"
   [[& lines] z [_ tblline]]
@@ -300,10 +296,17 @@
   [lines z line]
   #(next-line
     lines
-    (reduce 
-     zip/append-child
-     z
-     (orgmode.inline/parse-inline-elements line))))
+    (if (re-matches #"\s*" line)
+      (-> z
+          (zip/append-child {:type :p
+                             :content []})
+          (zip/down)
+          (zip/rightmost))
+
+      (reduce 
+       zip/append-child
+       z
+       (orgmode.inline/parse-inline-elements line)))))
 
 (defn next-line [[line & rest] z]
   "Process each line with the list of block element parsers. Return
