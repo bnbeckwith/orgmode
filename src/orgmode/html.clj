@@ -21,8 +21,8 @@
   ([url] (maybe-img url url))
   ([url alt]
      (if (re-find img-suffix-re url)
-       [:img {:src url :alt alt}]
-       [:a {:href url} alt])))
+       [:figure [:img {:src url :alt alt}] (into [:figcaption] alt)]
+       (into [:a {:href url}] alt))))
 
 (defn elmtype [x]
   (if (map? x)
@@ -43,42 +43,35 @@
   (hiccup.core/html (hiccupify r)))
 
 (defmethod blockprocess :src [x]
-  (let [type-map {"elisp" "cl"}
-        c (s/sh "pygmentize" 
+  (let [c (s/sh "pygmentize" 
                 "-f" "html" "-l" 
-                (or (type-map (first (:attribs x)))
-                    (first (:attribs x)))
+                (last (:attribs x))
            :in (t/join "\n" (:content x)))]
-    (if (not (= (:exit c) 0))
+    (if-not (zero? (:exit c))
       (list "<!-- pygmentize error: " (:err c) "\n Output" (:out c) "\n Error Code: " (:exit c) "\n-->"
        [:code
-        [:pre 
-         (StringEscapeUtils/escapeHtml4 (t/join "\n" (:content x)))]])
+         (StringEscapeUtils/escapeHtml4 (t/join "\n" (:content x)))])
       (:out c))))
   
-(defn make-para [coll]
-  (let [ps (partition-by #(or nil? (re-matches #"\s+" %)) coll)]
-    (map (fn [y] (into [:p] (map hiccupify y))) ps)))
-
 (defmethod blockprocess :default [x]
-  (into [(:block x)] (make-para (:content x))))
+  (into [(:block x)] (:content x)))
 
 (defmethod hiccupify :headline [x]
   (if (and (:tags x) ((:tags x) "noexport"))
     ""
-    (list 
+    [:section {:class (str "hsec" (inc (:level x)) (:tags x))}
      [(keyword (str "h" (inc (:level x))))
-       (:text x)]
-     (hiccupify (:content x)))))
+      (:text x)]
+     (hiccupify (:content x))]))
 
 (defmethod hiccupify :root [x]
-  (into [:div] (hiccupify (:content x))))
+  (into [:section {:id "root" } ] (hiccupify (:content x))))
 
 (defmethod hiccupify :list [x]
   (into [(:listtype x)] (hiccupify (:content x))))
 
 (defmethod hiccupify :listitem [x]
-  (into (into [:li] (map hiccupify (:text x))) (hiccupify (:content x))))
+  (into [:li] (map hiccupify (:content x))))
 
 (defmethod hiccupify :table [x]
   (let [rows (:rows x)
@@ -86,7 +79,7 @@
         tbl  [:table
               (when hdr?
                 (into [:tr] (map (fn [x] [:th (hiccupify x)]) (first rows))))]
-        rows (if hdr? (next (filter #(not (= :tline %)) rows)) rows)]
+        rows (if hdr? (next (filter #(not= :tline %) rows)) rows)]
     (into tbl
           (for [row rows]
             (into [:tr] 
@@ -132,20 +125,16 @@
           (map hiccupify tgts))))
 
 (defmethod hiccupify :verbatim [x]
-  [:verbatim (:content x)])
+  (into [:verbatim] (:content x)))
 
 (defmethod hiccupify :target [x]
   [:a {:id (:id x) :href (str "#" (:id x))}])
 
+(defmethod hiccupify :p [x]
+   [:p (hiccupify (:content x))])
+
 (defmethod hiccupify :seq [x]
-  (letfn [(p-able [s]
-            (or (and (string? s)
-                     (not (empty? s)))
-                (:inline s)))]
-    (for [s (partition-by p-able x)]
-      (if (p-able (first s))
-        [:p (map hiccupify s)]
-        (map hiccupify s)))))
+        (map hiccupify x))
 
 (defmethod hiccupify :default [x]
   (str x "\n"))
