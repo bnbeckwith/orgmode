@@ -32,8 +32,13 @@
     (parse-lines (line-seq r))))
 
 ;; ### Generated formatted text
-(defn convert [r]
-  (html/org-to-html r))
+(defn convert 
+  ([r]
+     (html/org-to-html r))
+  ([r f]
+     (binding [orgmode.html/*user-src-fn* f]
+       (convert r))))
+  
 
 ;; ### Utilities
 ;;

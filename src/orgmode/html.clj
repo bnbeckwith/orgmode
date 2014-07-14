@@ -1,12 +1,13 @@
 (ns orgmode.html
   (:require [hiccup.core :only [html]]
             [clojure.walk :as w]
-            [clojure.java.shell :as s]
             [clojure.string :as t])
   (:import [org.apache.commons.lang3 StringEscapeUtils]))
 
 (def img-suffix-re
   #"(?i)(png|bmp|jpg|jpeg)$")
+
+(def ^:dynamic *user-src-fn* (fn [x] nil))
 
 (defn squish-seq [s]
   (letfn [(concat-seq ([] [])
@@ -43,15 +44,11 @@
   (hiccup.core/html (hiccupify r)))
 
 (defmethod blockprocess :src [x]
-  (let [c (s/sh "pygmentize" 
-                "-f" "html" "-l" 
-                (last (:attribs x))
-           :in (t/join "\n" (:content x)))]
-    (if-not (zero? (:exit c))
-      (list "<!-- pygmentize error: " (:err c) "\n Output" (:out c) "\n Error Code: " (:exit c) "\n-->"
-       [:code
-         (StringEscapeUtils/escapeHtml4 (t/join "\n" (:content x)))])
-      (:out c))))
+  (if-let [c (and *user-src-fn* (*user-src-fn* x))]
+    c
+    [:pre
+     [:code
+      (StringEscapeUtils/escapeHtml4 (t/join "\n" (:content x)))]]))
   
 (defmethod blockprocess :default [x]
   (into [(:block x)] (:content x)))

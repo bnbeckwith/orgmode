@@ -1,4 +1,4 @@
-(defproject com.bnbeckwith/orgmode "0.7.3"
+(defproject com.bnbeckwith/orgmode "0.7.4"
   :description "Org-mode parser"
   :url "http://github.com/bnbeckiwith/orgmode"
   :license {:name "Eclipse Public License"
@@ -6,4 +6,4 @@
   :dependencies [[org.clojure/clojure "1.5.1"]
                  [hiccup "1.0.4"]
                  [org.apache.commons/commons-lang3 "3.1"]]
-  :profiles {:dev {:dependencies [[midje "1.5.1"]]}})
+  :profiles {:dev {:dependencies [[midje "1.6.3"]]}})

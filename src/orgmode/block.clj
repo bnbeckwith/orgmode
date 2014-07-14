@@ -264,7 +264,7 @@
   "Add table formula at z, splitting s into separate formulas."
   [z s]
   (zip/edit z
-       #(assoc % :formulas (s/split s #"::"))))
+       #(update-in % [:formulas] (s/split s #"::"))))
 
 (defn parse-table 
   "Parse a table to add at location z"
