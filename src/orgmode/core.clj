@@ -33,6 +33,9 @@
 
 ;; ### Generated formatted text
 (defn convert 
+  "Convert the structure to html 
+
+  The user can supply a function for handling source blocks."
   ([r]
      (html/org-to-html r))
   ([r f]

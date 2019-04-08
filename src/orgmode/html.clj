@@ -1,15 +1,27 @@
+;; ## HTML output 
+;;
+;; Functions to facilitate HTML output
+
 (ns orgmode.html
   (:require [hiccup.core :only [html]]
             [clojure.walk :as w]
             [clojure.string :as t])
   (:import [org.apache.commons.lang3 StringEscapeUtils]))
 
+
+;; ### Helping Items
+
 (def img-suffix-re
   #"(?i)(png|bmp|jpg|jpeg)$")
 
-(def ^:dynamic *user-src-fn* (fn [x] nil))
+(def ^:dynamic *user-src-fn* 
+  "User-defined function to use for SRC blocks of code. This
+  function will be called with the SRC block map passed in."
+  (fn [x] nil))
 
-(defn squish-seq [s]
+(defn squish-seq 
+  "For any consecutive sequences, merge them into one."
+  [s]
   (letfn [(concat-seq ([] [])
             ([x y]
                (vec 

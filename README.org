@@ -1,0 +1,34 @@
+* Orgmode
+
+  A Clojure library designed to parse mode files into clojure data
+  structures.
+
+** Installation
+
+   If you are using =lein=, then just add it as a dependency.
+
+#+BEGIN_SRC clojure
+  [bnbeckwith.com/orgmode "0.7.2"]
+#+END_SRC
+
+** Usage
+
+#+BEGIN_SRC clojure
+  (ns main
+    (:require [orgmode.core :as org]))
+
+  (org/parse-str "* Headline")
+  ; {:content [{:type :headline, :text "Headline", :todo nil, :level 1, :content [], :tags nil}], :level 0}
+   
+  (org/parse-str "[[http://clojure.org][Clojure]]")
+  ; {:content [{:inline true, :type :link, :uri "http://clojure.org", :content ["Clojure"]}], :level 0}
+
+  (org/parse "File.org")
+  ; File structure
+#+END_SRC
+
+* License
+
+  Copyright © 2012 Benjamin Beckwith
+
+  Distributed under the Eclipse Public License, the same as Clojure.
