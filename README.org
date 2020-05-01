@@ -12,7 +12,7 @@
 
 #+BEGIN_SRC clojure
   {:deps {orgmode {:git/url "https://github.com/davidpham87/orgmode"
-                   :git/sha1 "5b83296a645af8011ed282b86de1d5995a9914f8"}}}
+                   :sha "5b83296a645af8011ed282b86de1d5995a9914f8"}}}
 #+END_SRC
 
 ** Usage
