@@ -151,12 +151,3 @@
       (make-elem (fmt-re "_")   (fmt-create :underline))
       (make-elem (fmt-re "=")   (fmt-create :verbatim))
       (make-elem (fmt-re "~")   (fmt-create :code))))
-
-
-(comment
-  "Debugging the regex"
-  (re-seq ts-base "1900-01-01 Mon 12:12")
-  (re-seq ts-base "1900-01-01 Mon 12:00-13:15")
-
-  (->>  "1900-01-01 Mon 12:00" (re-seq ts-base) ts-active-create)
-  (->>  "1900-01-01 Mon 12:00-13:15" (re-seq ts-base) ts-active-create))

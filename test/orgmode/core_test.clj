@@ -1,4 +1,4 @@
-(ns orgmode.t-core
+(ns orgmode.core-test
   (:require [orgmode.core :as orgmode]
             [midje.sweet :refer :all]))
 

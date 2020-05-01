@@ -8,16 +8,24 @@
 
 ** Installation
 
-   Using =deps.edn=
+  Using =deps=, add the coordinate to your =deps.edn=:
 
 #+BEGIN_SRC clojure
-  {:deps {orgmode {:git/url "https://github.com/davidpham87/orgmode"
-                   :sha "5b83296a645af8011ed282b86de1d5995a9914f8"}}}
+  {:deps {
+          orgmode {:git/url "https://github.com/bnbeckwith/orgmode"
+                   :sha "5b83296a645af8011ed282b86de1d5995a9914f8"}
+          }}
+#+END_SRC
+
+  If you are using =lein=, just add it as a dependency:
+
+#+BEGIN_SRC clojure
+  [bnbeckwith.com/orgmode "0.7.5"]
 #+END_SRC
 
 ** Usage
 
-In your favorite terminal
+In your favorite terminal, launch a repl with
 
 #+begin_src bash
 clojure -Adev
@@ -39,6 +47,11 @@ clojure -Adev
 
 * License
 
-  Copyright © 2012-2020 David Pham, Benjamin Beckwith
+  Copyright © 2012-2020 Benjamin Beckwith
 
   Distributed under the Eclipse Public License, the same as Clojure.
+
+* Contributors
+
+- Benjamin Beckwith
+- David Pham
