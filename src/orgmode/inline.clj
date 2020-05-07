@@ -1,5 +1,5 @@
 ;; ## Inline Element Formatting
-;; 
+;;
 ;; Aside from the block elements handled in the core, there are
 ;; particular elements withing text that have meaning. There are
 ;; roughly two types of elements: links and formatting.
@@ -12,10 +12,10 @@
 (def link-re #"\[\[([^\]]+)(?:\]\[([^\]]+))?\]\]")
 
 (defn link-create
-  "Create hyperlink structures from a list of regex matches" 
+  "Create hyperlink structures from a list of regex matches"
   [coll]
   (for [[_ link text ] coll]
-    {:type :link 
+    {:type :link
      :uri link
      :content [(or text link)]}))
 
@@ -40,8 +40,9 @@
 
 ;; ### Timestamp Elements
 
+;; hack to make it work with ranges
 (def ts-base
-  #"(\d{4})-(\d{2})-(\d{2}) (\w{3})(?: (\d{2}:\d{2}(-(\d{2}:\d{2}| .*)?)))?")
+  #"(\d{4})-(\d{2})-(\d{2}) (\w{3})(?: (\d{1,2}):(\d{2})(-(\d{1,2}):(\d{2})|.*)?)?")
 
 (def ts-active-re
   (re-pattern (str "<" ts-base ">")))
@@ -49,16 +50,18 @@
 (defn ts-active-create
   "Creates active timestamps from a list of regex matches"
   [coll]
-  (for [[_ Y M D d h m a] coll]
-    {:type :timestamp
-     :timetype :active
-     :year Y
-     :month M
-     :day D
-     :dayname d
-     :hour h
-     :minute m}))
-     
+  (for [[_ Y M D d h m _ Eh Em] coll]
+    (cond-> {:type :timestamp
+             :timetype :active
+             :year Y
+             :month M
+             :day D
+             :dayname d
+             :hour h
+             :minute m}
+      (and Eh Em) (merge {:end-hour Eh :end-minute Em})
+      :always or)))
+
 (def ts-inactive-re
   (re-pattern (str "\\[" ts-base "\\]")))
 
@@ -74,7 +77,8 @@
 (defn ts-range-create
   "Create timestamp ranges from a list of regex matches"
   [coll]
-  (for [[_ BY BM BD Bd Bh Bm Ba EY EM ED Ed Eh Em Ea] coll]
+  (for [[_ BY BM BD Bd Bh Bm _ _
+         _ EY EM ED Ed Eh Em _ _] coll]
     {:type :timestamp
      :timetype :range
      :year    BY
@@ -89,25 +93,25 @@
      :end-dayname Ed
      :end-hour    Eh
      :end-minute  Em}))
-  
+
 ;; ### Formatting Elements
 
-(defn fmt-create 
+(defn fmt-create
   "Generic function to create a format element from given type"
   [type]
-  (fn [ts] 
+  (fn [ts]
     (for [[_ t] ts]
       {:type type
        :content [t]})))
 
-(defn fmt-re 
+(defn fmt-re
   "Create a re-pattern to match the given delimiter s"
   [s]
   (re-pattern (str s #"(\S(?:.*?\S)??)" s)))
 
 ; ### Inline Processing
 
-(defn re-interleave 
+(defn re-interleave
   "Split l with on re, interleave this list with the inline elements
   constructed from ms using cfn"
   [re l cfn ms]
@@ -117,8 +121,8 @@
       els
       (vec
        (interleave ls (conj els {:inline true :type :comment :text "FIX INTERLEAVING"}))))))
-    
-(defn make-elem 
+
+(defn make-elem
   "Try to make any inline elements out of strings in coll using re and
   cstor to match and construct these elements"
   [coll re cstor]
@@ -130,7 +134,7 @@
          elem)
        elem))))
 
-(defn parse-inline-elements 
+(defn parse-inline-elements
   "Takes line and breaks it into inline elements and interleaving
   text"
   [line]

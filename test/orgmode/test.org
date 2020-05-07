@@ -1,3 +1,5 @@
+#+TITLE: Test.org
+#+author: tester
 
 * Headings
 ** Level 2
@@ -23,7 +25,7 @@
   |-------+-------|
   | a     | 3     |
   | b     | 4     |
-  
+
 * Block/Line elements
 
 
@@ -56,6 +58,3 @@ my $foo;
   There are a few inline elements to test such as *bold*, =example=,
   /italic/ or even _underline_. This block of text itself should be
   considered a paragraph [fn:: It is possible to have footnotes].
-
-
-  

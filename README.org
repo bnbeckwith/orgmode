@@ -3,15 +3,33 @@
   A Clojure library designed to parse mode files into clojure data
   structures.
 
+** Status
+   Usable, but not perfect, parse the [[test/orgmode/test.org][test]] file to see some of the issues.
+
 ** Installation
 
-   If you are using =lein=, then just add it as a dependency.
+  Using =deps=, add the coordinate to your =deps.edn=:
 
 #+BEGIN_SRC clojure
-  [bnbeckwith.com/orgmode "0.7.2"]
+  {:deps {
+          orgmode {:git/url "https://github.com/bnbeckwith/orgmode"
+                   :sha "5b83296a645af8011ed282b86de1d5995a9914f8"}
+          }}
+#+END_SRC
+
+  If you are using =lein=, just add it as a dependency:
+
+#+BEGIN_SRC clojure
+  [bnbeckwith.com/orgmode "0.7.5"]
 #+END_SRC
 
 ** Usage
+
+In your favorite terminal, launch a repl with
+
+#+begin_src bash
+clojure -Adev
+#+end_src
 
 #+BEGIN_SRC clojure
   (ns main
@@ -19,7 +37,7 @@
 
   (org/parse-str "* Headline")
   ; {:content [{:type :headline, :text "Headline", :todo nil, :level 1, :content [], :tags nil}], :level 0}
-   
+
   (org/parse-str "[[http://clojure.org][Clojure]]")
   ; {:content [{:inline true, :type :link, :uri "http://clojure.org", :content ["Clojure"]}], :level 0}
 
@@ -29,6 +47,11 @@
 
 * License
 
-  Copyright © 2012 Benjamin Beckwith
+  Copyright © 2012-2020 Benjamin Beckwith
 
   Distributed under the Eclipse Public License, the same as Clojure.
+
+* Contributors
+
+- Benjamin Beckwith
+- David Pham
