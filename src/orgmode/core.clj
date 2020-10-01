@@ -18,7 +18,7 @@
 (defn parse-lines
   "Parse coll as a sequence of orgmode lines"
   [coll]
-  (orgmode.block/parse-lines coll))
+  (block/parse-lines coll))
 
 (defn parse-str
   "Split a string and parse it"
@@ -32,16 +32,16 @@
     (parse-lines (line-seq r))))
 
 ;; ### Generated formatted text
-(defn convert 
-  "Convert the structure to html 
+(defn convert
+  "Convert the structure to html
 
   The user can supply a function for handling source blocks."
   ([r]
-     (html/org-to-html r))
+   (html/org-to-html r))
   ([r f]
-     (binding [orgmode.html/*user-src-fn* f]
-       (convert r))))
-  
+   (binding [html/*user-src-fn* f]
+     (convert r))))
+
 
 ;; ### Utilities
 ;;
@@ -51,7 +51,7 @@
 (defn zip
   "Returns a zipper from org elements (from orgmode/parse)"
   [root]
-  (clojure.zip/xml-zip root))
+  (zip/xml-zip root))
 
 (defn getall
   "Returns all nodes from root satisifying f"
