@@ -1,4 +1,4 @@
-;; ## HTML output 
+;; ## HTML output
 ;;
 ;; Functions to facilitate HTML output
 
@@ -14,23 +14,23 @@
 (def img-suffix-re
   #"(?i)(png|bmp|jpg|jpeg)$")
 
-(def ^:dynamic *user-src-fn* 
+(def ^:dynamic *user-src-fn*
   "User-defined function to use for SRC blocks of code. This
   function will be called with the SRC block map passed in."
   (fn [x] nil))
 
-(defn squish-seq 
+(defn squish-seq
   "For any consecutive sequences, merge them into one."
   [s]
   (letfn [(concat-seq ([] [])
             ([x y]
-               (vec 
+               (vec
                 (if (seq? y)
                   (concat x (squish-seq y))
                   (into x [y])))))]
     (reduce concat-seq [] s)))
-                   
-(defn maybe-img 
+
+(defn maybe-img
   ([url] (maybe-img url url))
   ([url alt]
      (if (re-find img-suffix-re url)
@@ -61,7 +61,7 @@
     [:pre
      [:code
       (StringEscapeUtils/escapeHtml4 (t/join "\n" (:content x)))]]))
-  
+
 (defmethod blockprocess :default [x]
   (into [(:block x)] (:content x)))
 
@@ -91,7 +91,7 @@
         rows (if hdr? (next (filter #(not= :tline %) rows)) rows)]
     (into tbl
           (for [row rows]
-            (into [:tr] 
+            (into [:tr]
                   (map (fn [x] [:td (hiccupify x)]) row))))))
 
 (defmethod hiccupify :block [x]
@@ -107,7 +107,7 @@
    (:id x)])
 
 (defmethod hiccupify :footnote [x]
-  (into [:a.footnote-def 
+  (into [:a.footnote-def
          {:id (:id x)
           :href (str "#" (:id x))}]
    (hiccupify (:content x))))

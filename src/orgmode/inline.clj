@@ -147,7 +147,7 @@
       (make-elem ts-inactive-re ts-inactive-create)
       (make-elem (fmt-re "\\*") (fmt-create :bold))
       (make-elem (fmt-re "/")   (fmt-create :italic))
-      (make-elem (fmt-re "\\+")   (fmt-create :strike-through))
+      (make-elem (fmt-re "\\+") (fmt-create :strike-through))
       (make-elem (fmt-re "_")   (fmt-create :underline))
       (make-elem (fmt-re "=")   (fmt-create :verbatim))
       (make-elem (fmt-re "~")   (fmt-create :code))))
