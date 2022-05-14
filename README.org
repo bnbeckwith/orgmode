@@ -1,6 +1,6 @@
 * Orgmode
 
-  A Clojure library designed to parse mode files into clojure data
+  A Clojure library designed to parse org-mode files into clojure data
   structures.
 
 ** Status
