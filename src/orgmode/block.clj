@@ -327,5 +327,5 @@
 (defn parse-lines
   "Parse coll as org-mode formatting"
   [coll]
-  (let [root (clojure.zip/xml-zip {:level 0})]
+  (let [root (zip/xml-zip {:level 0})]
     (trampoline next-line coll root)))
